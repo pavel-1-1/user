@@ -1,6 +1,6 @@
-package com.kameleoon.user.controller.rating;
+package com.kameleoon.user.controller.quote;
 
-import com.kameleoon.user.service.rating.VotingService;
+import com.kameleoon.user.service.quote.VotingService;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

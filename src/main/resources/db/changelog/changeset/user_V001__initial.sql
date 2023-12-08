@@ -18,3 +18,13 @@ create table quotes
     updated_at timestamptz DEFAULT current_timestamp,
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+create table voting
+(
+ user_id    bigint,
+ quote_id bigint,
+ voting_for_against smallint default 0,
+ primary key (user_id, quote_id),
+  CONSTRAINT fk_quotes_id FOREIGN KEY (quote_id) REFERENCES quotes (id) ON DELETE CASCADE,
+  CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);

@@ -1,4 +1,4 @@
-package com.kameleoon.user.entity.rating;
+package com.kameleoon.user.entity.quote;
 
 import com.kameleoon.user.entity.user.User;
 import jakarta.persistence.*;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "quotes")
-public class Rating {
+public class Quote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

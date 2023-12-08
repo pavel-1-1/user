@@ -1,8 +1,8 @@
-package com.kameleoon.user.dto.rating;
+package com.kameleoon.user.dto.quote;
 
 import com.kameleoon.user.dto.user.UserDto;
 
-public class RatingDto {
+public class QuoteDto {
 
     private long id;
 
@@ -12,10 +12,10 @@ public class RatingDto {
 
     private int rating;
 
-    public RatingDto() {
+    public QuoteDto() {
     }
 
-    public RatingDto(long id, String content, UserDto user, int rating) {
+    public QuoteDto(long id, String content, UserDto user, int rating) {
         this.id = id;
         this.content = content;
         this.user = user;

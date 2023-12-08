@@ -1,13 +1,13 @@
-package com.kameleoon.user.dto.rating;
+package com.kameleoon.user.dto.quote;
 
-public class RatingCreateDto {
+public class QuoteCreateDto {
     private long userId;
     private String content;
 
-    public RatingCreateDto() {
+    public QuoteCreateDto() {
     }
 
-    public RatingCreateDto(long userId, String content) {
+    public QuoteCreateDto(long userId, String content) {
         this.userId = userId;
         this.content = content;
     }
