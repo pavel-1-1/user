@@ -10,9 +10,15 @@ import com.kameleoon.user.global_exception.ResourceNotFoundException;
 import com.kameleoon.user.mappers.rating.RatingMapper;
 import com.kameleoon.user.repository.RatingRepository;
 import com.kameleoon.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class RatingService {
@@ -38,17 +44,32 @@ public class RatingService {
         return ratingMapper.toDto(ratingRepository.save(rating));
     }
 
-    @Transactional
     public void deleteRating(Long userId, Long ratingId) {
         if (ratingRepository.deleteByIdByUserId(userId, ratingId) == 0)
             throw new RequestError("The quote has not been deleted!");
     }
 
     @Transactional
-    public RatingDto update(long rating_id, String content) {
-        Rating rating = ratingRepository.findById(rating_id).orElseThrow(() ->
+    public RatingDto update(long ratingId, String content) {
+        Rating rating = ratingRepository.findById(ratingId).orElseThrow(() ->
                 new ResourceNotFoundException("The quote was not found!"));
         rating.setContent(content);
         return ratingMapper.toDto(ratingRepository.save(rating));
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Retryable(maxAttempts = 5, backoff = @Backoff(value = 500))
+    public RatingDto getRating(long ratingId) {
+        return ratingMapper.toDto(ratingRepository.findById(ratingId).orElseThrow(() ->
+                new ResourceNotFoundException("The quote was not found!")));
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Retryable(maxAttempts = 5, backoff = @Backoff(value = 500))
+    public RatingDto getRandom() {
+        List<Long> list = ratingRepository.arrId();
+        long id = list.get(new Random().nextInt(list.size()));
+        return ratingMapper.toDto(ratingRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("The quote was not found!")));
     }
 }

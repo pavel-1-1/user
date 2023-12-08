@@ -31,8 +31,18 @@ public class RatingController {
     }
 
     @PutMapping("/update")
-    public RatingDto update(@RequestParam @Min(0) Long rating_id,
+    public RatingDto update(@RequestParam @Min(0) Long ratingId,
                             @RequestParam @NotBlank @Size(max = 255) String content) {
-        return ratingService.update(rating_id, content);
+        return ratingService.update(ratingId, content);
+    }
+
+    @GetMapping("/get{ratingId}")
+    public RatingDto get(@PathVariable @Min(0) Long ratingId) {
+        return ratingService.getRating(ratingId);
+    }
+
+    @GetMapping("/getRandom")
+    public RatingDto getRandom() {
+        return ratingService.getRandom();
     }
 }
