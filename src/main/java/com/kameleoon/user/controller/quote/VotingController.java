@@ -18,13 +18,15 @@ public class VotingController {
         this.votingService = votingService;
     }
 
-    @GetMapping("/voting-for{id}")
-    public int votingFor(@PathVariable @Min(0) long id) {
-        return votingService.votingFor(id);
+    @GetMapping("/voting-for{userId}/{quoteId}")
+    public int votingFor(@PathVariable @Min(0) Long userId,
+                         @PathVariable @Min(0) Long quoteId) {
+        return votingService.votingFor(userId, quoteId);
     }
 
-    @GetMapping("/voting-against{id}")
-    public int votingAgainst(@PathVariable @Min(0) long id) {
-        return votingService.votingAgainst(id);
+    @GetMapping("/voting-against{userId}/{quoteId}")
+    public int votingAgainst(@PathVariable @Min(0) Long userId,
+                             @PathVariable @Min(0) Long quoteId) {
+        return votingService.votingAgainst(userId, quoteId);
     }
 }

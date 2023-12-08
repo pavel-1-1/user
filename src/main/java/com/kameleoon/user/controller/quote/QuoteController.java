@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/rating")
+@RequestMapping("/api/v1/quote")
 public class QuoteController {
     private final QuoteService QuoteService;
 
@@ -41,7 +41,7 @@ public class QuoteController {
         return QuoteService.getQuote(quoteId);
     }
 
-    @GetMapping("/getRandom")
+    @GetMapping("/get-random")
     public QuoteDto getRandom() {
         return QuoteService.getRandom();
     }

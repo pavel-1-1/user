@@ -1,20 +1,19 @@
 package com.kameleoon.user.entity.quote;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "voting")
 public class Voting {
-    @Id
-    @Column(name = "user_id")
-    private long userId;
+        @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "quote_id")
-    private long quoteId;
+    private Long quoteId;
 
     @Column(name = "voting_for_against", length = 3)
     private int voting;
@@ -22,25 +21,27 @@ public class Voting {
     public Voting() {
     }
 
-    public Voting(long userId, long quoteId, int voting) {
-        this.userId = userId;
-        this.quoteId = quoteId;
-        this.voting = voting;
+    public Long getId() {
+        return id;
     }
 
-    public long getUserId() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public long getQuoteId() {
+    public Long getQuoteId() {
         return quoteId;
     }
 
-    public void setQuoteId(long quoteId) {
+    public void setQuoteId(Long quoteId) {
         this.quoteId = quoteId;
     }
 

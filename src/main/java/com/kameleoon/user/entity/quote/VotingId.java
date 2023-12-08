@@ -14,4 +14,20 @@ public class VotingId implements Serializable {
         this.userId = userId;
         this.quoteId = quoteId;
     }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getQuoteId() {
+        return quoteId;
+    }
+
+    public void setQuoteId(long quoteId) {
+        this.quoteId = quoteId;
+    }
 }

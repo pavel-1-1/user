@@ -21,10 +21,10 @@ create table quotes
 
 create table voting
 (
- user_id    bigint,
- quote_id bigint,
+id   bigint primary key generated always as identity unique,
+ user_id    bigint not null,
+ quote_id bigint not null,
  voting_for_against smallint default 0,
- primary key (user_id, quote_id),
   CONSTRAINT fk_quotes_id FOREIGN KEY (quote_id) REFERENCES quotes (id) ON DELETE CASCADE,
   CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
