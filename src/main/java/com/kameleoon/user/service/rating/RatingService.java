@@ -30,17 +30,17 @@ public class RatingService {
 
     @Transactional
     public RatingDto createRating(RatingCreateDto dto) {
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() ->
+                new ResourceNotFoundException("Such is the user's no!"));
         Rating rating = new Rating();
         rating.setContent(dto.getContent());
-        User user = userRepository.findById(dto.getUser_id()).orElseThrow(() ->
-                new ResourceNotFoundException("Such is the user's no!"));
         rating.setUser(user);
         return ratingMapper.toDto(ratingRepository.save(rating));
     }
 
     @Transactional
-    public void deleteRating(Long user_id, Long rating_id) {
-        if (ratingRepository.deleteByIdByUserId(user_id, rating_id) == 0)
+    public void deleteRating(Long userId, Long ratingId) {
+        if (ratingRepository.deleteByIdByUserId(userId, ratingId) == 0)
             throw new RequestError("The quote has not been deleted!");
     }
 

@@ -4,12 +4,16 @@ package com.kameleoon.user.service;
 import com.kameleoon.user.dto.user.UserCreateDto;
 import com.kameleoon.user.dto.user.UserDto;
 import com.kameleoon.user.entity.user.User;
+import com.kameleoon.user.global_exception.RequestError;
 import com.kameleoon.user.mappers.user.UserCreateMapper;
 import com.kameleoon.user.mappers.user.UserMapper;
 import com.kameleoon.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.sql.SQLException;
 
 @Service
 public class UserService {
@@ -30,7 +34,11 @@ public class UserService {
     public UserDto create(UserCreateDto dto) {
         User user = userCreateMapper.toEntity(dto);
         user.setPassword(encoder.encode(dto.getPassword()));
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new RequestError("Such a user is registered!");
+        }
         return userMapper.toDto(user);
     }
 

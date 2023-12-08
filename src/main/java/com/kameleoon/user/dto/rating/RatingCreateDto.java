@@ -1,23 +1,23 @@
 package com.kameleoon.user.dto.rating;
 
 public class RatingCreateDto {
-    private long user_id;
+    private long userId;
     private String content;
 
     public RatingCreateDto() {
     }
 
-    public RatingCreateDto(long user_id, String content) {
-        this.user_id = user_id;
+    public RatingCreateDto(long userId, String content) {
+        this.userId = userId;
         this.content = content;
     }
 
-    public long getUser_id() {
-        return user_id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getContent() {

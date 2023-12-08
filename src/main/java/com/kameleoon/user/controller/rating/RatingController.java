@@ -26,8 +26,8 @@ public class RatingController {
     }
 
     @DeleteMapping("/delete")
-    public void delete(@RequestParam @Min(0) Long user_id, @RequestParam @Min(0) Long rating_id) {
-        ratingService.deleteRating(user_id, rating_id);
+    public void delete(@RequestParam @Min(0) Long userId, @RequestParam @Min(0) Long ratingId) {
+        ratingService.deleteRating(userId, ratingId);
     }
 
     @PutMapping("/update")

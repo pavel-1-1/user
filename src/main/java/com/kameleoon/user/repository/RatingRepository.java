@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RatingRepository extends JpaRepository<Rating, Long> {
     @Modifying
     @Query(value = """
-            delete from quotes as r where r.user_id = :user_id and r.id = :rating_id
+            delete from quotes as r where r.user_id = :userId and r.id = :ratingId
             """, nativeQuery = true)
-    int deleteByIdByUserId(Long user_id, Long rating_id);
+    int deleteByIdByUserId(Long userId, Long ratingId);
 }
