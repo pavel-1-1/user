@@ -44,8 +44,8 @@ public class QuoteService {
         return quoteMapper.toDto(quoteRepository.save(quote));
     }
 
-    public void deleteRating(Long userId, Long ratingId) {
-        if (quoteRepository.deleteByIdByUserId(userId, ratingId) == 0)
+    public void deleteQuote(Long userId, Long quoteId) {
+        if (quoteRepository.deleteByIdByUserId(userId, quoteId) == 0)
             throw new RequestError("The quote has not been deleted!");
     }
 

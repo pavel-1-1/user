@@ -2,19 +2,19 @@ package com.kameleoon.user.repository;
 
 import com.kameleoon.user.entity.quote.Quote;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface QuoteRepository extends JpaRepository<Quote, Long> {
-    @Modifying
     @Query(value = """
-            delete from quotes as r where r.user_id = :userId and r.id = :quoteId
+            WITH deleted AS (DELETE FROM quotes WHERE user_id = :userId and id = :quoteId is true RETURNING *)
+            SELECT count(*) FROM deleted;
             """, nativeQuery = true)
-    int deleteByIdByUserId(Long userId, Long quoteId);
+    int deleteByIdByUserId(@Param("userId") Long userId, @Param("quoteId") Long quoteId);
 
     @Query(value = """
             SELECT r.id FROM Quote r 

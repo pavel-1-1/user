@@ -37,7 +37,10 @@ public class VotingService {
         Voting voting;
         if (votingOp.isPresent()) {
             voting = votingOp.get();
-            if (voting.getVoting() <= 0) {
+            int checkVoting = voting.getVoting();
+            if (checkVoting < 0) {
+                voting.setVoting(0);
+            } else if (checkVoting == 0) {
                 voting.setVoting(1);
             } else {
                 throw new RequestError("You have already voted");
@@ -63,7 +66,10 @@ public class VotingService {
         Voting voting;
         if (votingOp.isPresent()) {
             voting = votingOp.get();
-            if (voting.getVoting() >= 0) {
+            int checkVoting = voting.getVoting();
+            if (checkVoting > 0) {
+                voting.setVoting(0);
+            } else if (checkVoting == 0) {
                 voting.setVoting(-1);
             } else {
                 throw new RequestError("You have already voted");
@@ -74,7 +80,7 @@ public class VotingService {
             voting.setUserId(userId);
             voting.setQuoteId(quoteId);
         }
-        int countVoting = quote.getRating() - 1;
+        int countVoting = quote.getRating() + (-1);
         quote.setRating(countVoting);
         ratingRepository.save(quote);
         votingRepository.save(voting);

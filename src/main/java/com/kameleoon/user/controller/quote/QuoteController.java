@@ -27,7 +27,7 @@ public class QuoteController {
 
     @DeleteMapping("/delete")
     public void delete(@RequestParam @Min(0) Long userId, @RequestParam @Min(0) Long quoteId) {
-        QuoteService.deleteRating(userId, quoteId);
+        QuoteService.deleteQuote(userId, quoteId);
     }
 
     @PutMapping("/update")
