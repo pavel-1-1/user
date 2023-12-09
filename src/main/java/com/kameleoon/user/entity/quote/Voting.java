@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "voting")
 public class Voting {
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

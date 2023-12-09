@@ -1,5 +1,6 @@
 package com.kameleoon.user.controller.quote;
 
+import com.kameleoon.user.dto.quote.VotingScheduleDto;
 import com.kameleoon.user.service.quote.VotingService;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,10 @@ public class VotingController {
     public int votingAgainst(@PathVariable @Min(0) Long userId,
                              @PathVariable @Min(0) Long quoteId) {
         return votingService.votingAgainst(userId, quoteId);
+    }
+
+    @GetMapping("/graph{quoteId}")
+    public VotingScheduleDto graph(@PathVariable @Min(0) Long quoteId) {
+        return votingService.votingSchedule(quoteId);
     }
 }

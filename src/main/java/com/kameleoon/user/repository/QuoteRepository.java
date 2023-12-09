@@ -20,4 +20,14 @@ public interface QuoteRepository extends JpaRepository<Quote, Long> {
             SELECT r.id FROM Quote r 
             """)
     List<Long> arrId();
+
+    @Query(value = """
+            select * from quotes q order by q.rating desc limit 10
+            """, nativeQuery = true)
+    List<Quote> top10();
+
+    @Query(value = """
+            select * from quotes q order by q.rating limit 10
+            """, nativeQuery = true)
+    List<Quote> last10();
 }

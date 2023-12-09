@@ -2,7 +2,11 @@ package com.kameleoon.user.dto.quote;
 
 import com.kameleoon.user.dto.user.UserDto;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class QuoteDto {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
 
     private long id;
 
@@ -12,14 +16,27 @@ public class QuoteDto {
 
     private int rating;
 
+    private String createdAt;
+
+    private String updatedAt;
+
     public QuoteDto() {
     }
 
-    public QuoteDto(long id, String content, UserDto user, int rating) {
-        this.id = id;
-        this.content = content;
-        this.user = user;
-        this.rating = rating;
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = formatter.format(createdAt);
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = formatter.format(updatedAt);
     }
 
     public long getId() {
