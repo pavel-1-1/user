@@ -5,6 +5,7 @@ import com.kameleoon.user.dto.user.UserCreateDto;
 import com.kameleoon.user.dto.user.UserDto;
 import com.kameleoon.user.entity.user.User;
 import com.kameleoon.user.global_exception.RequestError;
+import com.kameleoon.user.global_exception.ResourceNotFoundException;
 import com.kameleoon.user.mappers.user.UserCreateMapper;
 import com.kameleoon.user.mappers.user.UserMapper;
 import com.kameleoon.user.repository.UserRepository;
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
 
 @Service
 public class UserService {
@@ -42,4 +41,8 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    public UserDto get(Long userId) {
+        return userMapper.toDto(userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("The user was not found")));
+    }
 }

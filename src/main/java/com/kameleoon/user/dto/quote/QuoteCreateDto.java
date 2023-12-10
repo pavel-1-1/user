@@ -1,7 +1,10 @@
 package com.kameleoon.user.dto.quote;
 
+import jakarta.validation.constraints.Size;
+
 public class QuoteCreateDto {
     private long userId;
+    @Size(min = 10, max = 255, message = "max 255")
     private String content;
 
     public QuoteCreateDto() {

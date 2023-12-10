@@ -128,9 +128,8 @@ public class VotingService {
     private VotingSchedule updateSchedule(Quote quote) {
         VotingSchedule votingSchedule = votingScheduleRepository.findById(quote.getId()).orElseThrow(() ->
                 new ResourceNotFoundException("There is no schedule"));
-        String jsonArrRating = votingSchedule.getRating().replace("]", "," + quote.getRating() + "]");
-        String jsonArrTime = votingSchedule.getUpdateAt().replace("]", "," + formatter.format(quote.getUpdatedAt())
-                + "]");
+        String jsonArrRating = votingSchedule.getRating().replace("]", ",\"" + quote.getRating() + "\"]");
+        String jsonArrTime = votingSchedule.getUpdateAt().replace("]", ",\"" + formatter.format(quote.getUpdatedAt()) + "\"]");
         votingSchedule.setRating(jsonArrRating);
         votingSchedule.setUpdateAt(jsonArrTime);
         return votingSchedule;

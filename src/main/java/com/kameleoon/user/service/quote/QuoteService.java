@@ -49,10 +49,9 @@ public class QuoteService {
         quote.setContent(dto.getContent());
         quote.setUser(user);
         Quote quoteNow = quoteRepository.save(quote);
-        System.out.println(quoteNow.getId() + "---------------------------------------------");
         votingScheduleRepository.save(new VotingSchedule(quoteNow.getId(),
-                String.format("[%s]", formatter.format(quoteNow.getUpdatedAt())),
-                String.format("[%s]", quoteNow.getRating())
+                String.format("[\"%s\"]", formatter.format(quoteNow.getUpdatedAt())),
+                String.format("[\"%s\"]", quoteNow.getRating())
         ));
         return quoteMapper.toDto(quoteNow);
     }
