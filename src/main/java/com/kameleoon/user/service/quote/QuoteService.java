@@ -13,8 +13,6 @@ import com.kameleoon.user.repository.QuoteRepository;
 import com.kameleoon.user.repository.UserRepository;
 import com.kameleoon.user.repository.VotingScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,7 @@ public class QuoteService {
     private final VotingScheduleRepository votingScheduleRepository;
     private final QuoteMapper quoteMapper;
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm:ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
 
     @Autowired
     public QuoteService(QuoteRepository quoteRepository, QuoteMapper quoteMapper,
@@ -56,6 +54,7 @@ public class QuoteService {
         return quoteMapper.toDto(quoteNow);
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void deleteQuote(Long userId, Long quoteId) {
         if (quoteRepository.deleteByIdByUserId(userId, quoteId) == 0)
             throw new RequestError("The quote has not been deleted!");
@@ -69,30 +68,28 @@ public class QuoteService {
         return quoteMapper.toDto(quoteRepository.save(quote));
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Retryable(maxAttempts = 5, backoff = @Backoff(value = 500))
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public QuoteDto getQuote(long quoteId) {
         return quoteMapper.toDto(quoteRepository.findById(quoteId).orElseThrow(() ->
                 new ResourceNotFoundException("The quote was not found!")));
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Retryable(maxAttempts = 5, backoff = @Backoff(value = 500))
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public QuoteDto getRandom() {
-        List<Long> list = quoteRepository.arrId();
+        List<Long> list;
+        if ((list = quoteRepository.arrId()).isEmpty())
+            throw new ResourceNotFoundException("The quotes was not found!");
         long id = list.get(new Random().nextInt(list.size()));
         return quoteMapper.toDto(quoteRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("The quote was not found!")));
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Retryable(maxAttempts = 5, backoff = @Backoff(value = 500))
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public List<QuoteDto> top10Quote() {
         return quoteMapper.toDtoList(quoteRepository.top10());
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Retryable(maxAttempts = 5, backoff = @Backoff(value = 500))
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public List<QuoteDto> last10Quote() {
         return quoteMapper.toDtoList(quoteRepository.last10());
     }

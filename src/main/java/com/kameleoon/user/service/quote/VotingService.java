@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class VotingService {
@@ -47,66 +48,51 @@ public class VotingService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 500L), retryFor = SQLException.class)
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 100L), retryFor = SQLException.class)
     public int votingFor(Long userId, Long quoteId) {
-        Optional<Voting> votingOp = findByUserIdAndQuoteId(userId, quoteId);
-        Quote quote = findById(quoteId);
-        Voting voting;
-        if (votingOp.isPresent()) {
-            voting = votingOp.get();
-            int checkVoting = voting.getVoting();
-            if (checkVoting < 0) {
-                voting.setVoting(0);
-            } else if (checkVoting == 0) {
-                voting.setVoting(1);
-            } else {
-                throw new RequestError("You have already voted");
-            }
-        } else {
-            voting = new Voting();
-            voting.setVoting(1);
-            voting.setUserId(userId);
-            voting.setQuoteId(quoteId);
-        }
-        int countVoting = quote.getRating() + 1;
-        quote.setRating(countVoting);
-        votingScheduleRepository.save(updateSchedule(quote));
-        ratingRepository.save(quote);
-        votingRepository.save(voting);
-        return countVoting;
+        return checkCreateVoting(userId, quoteId, 1);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 500L), retryFor = SQLException.class)
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 100L), retryFor = SQLException.class)
     public int votingAgainst(Long userId, Long quoteId) {
-        Optional<Voting> votingOp = findByUserIdAndQuoteId(userId, quoteId);
+        return checkCreateVoting(userId, quoteId, -1);
+    }
+
+    @Transactional
+    private int checkCreateVoting(Long userId, Long quoteId, int num) {
+        Optional<Voting> voting = findByUserIdAndQuoteId(userId, quoteId);
         Quote quote = findById(quoteId);
-        Voting voting;
-        if (votingOp.isPresent()) {
-            voting = votingOp.get();
-            int checkVoting = voting.getVoting();
-            if (checkVoting > 0) {
-                voting.setVoting(0);
-            } else if (checkVoting == 0) {
-                voting.setVoting(-1);
+        int numVoting;
+        Voting votingNew;
+        if (voting.isPresent()) {
+            votingNew = voting.get();
+            numVoting = votingNew.getVoting();
+            Function<Integer, Boolean> check = n -> {
+                return num == -1 ? numVoting > 0 : numVoting < 0;
+            };
+            if (check.apply(num)) {
+                votingNew.setVoting(0);
+            } else if (numVoting == 0) {
+                votingNew.setVoting(num);
             } else {
                 throw new RequestError("You have already voted");
             }
         } else {
-            voting = new Voting();
-            voting.setVoting(-1);
-            voting.setUserId(userId);
-            voting.setQuoteId(quoteId);
+            votingNew = new Voting();
+            votingNew.setVoting(num);
+            votingNew.setUserId(userId);
+            votingNew.setQuoteId(quoteId);
         }
-        int countVoting = quote.getRating() + (-1);
+        int countVoting = quote.getRating() + (num);
         quote.setRating(countVoting);
         votingScheduleRepository.save(updateSchedule(quote));
         ratingRepository.save(quote);
-        votingRepository.save(voting);
+        votingRepository.save(votingNew);
         return countVoting;
     }
 
-    @Transactional(isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public VotingScheduleDto votingSchedule(Long quoteId) {
         VotingSchedule votingSchedule = votingScheduleRepository.findById(quoteId).orElseThrow(() ->
                 new ResourceNotFoundException("There is no schedule"));
@@ -120,7 +106,6 @@ public class VotingService {
         } catch (JsonProcessingException e) {
             throw new RequestError("Please try again!");
         }
-        System.out.println(times + "-------------------" + ratings);
         return new VotingScheduleDto(times, ratings);
     }
 
